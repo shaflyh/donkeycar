@@ -14,7 +14,6 @@ Options:
     --myconfig=filename     Specify myconfig file to use. 
                             [default: myconfig.py]
 """
-from donkeycar.parts import tachometer
 import os
 import time
 import logging
@@ -30,6 +29,8 @@ from donkeycar.parts.throttle_filter import ThrottleFilter
 from donkeycar.parts.behavior import BehaviorPart
 from donkeycar.parts.file_watcher import FileWatcher
 from donkeycar.parts.launch import AiLaunch
+from donkeycar.parts.tachometer import (SerialTachometer, GpioTachometer, TachometerMode)
+from donkeycar.parts.odometer import Odometer
 from donkeycar.pipeline.augmentations import ImageAugmentation
 from donkeycar.utils import *
 
@@ -77,20 +78,19 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
         tel = MqttTelemetry(cfg)
         
     if cfg.HAVE_ODOM:
-        from donkeycar.parts.odometer import Odometer
         tachometer = None
         if cfg.ENCODER_TYPE == "GPIO":
-            from donkeycar.parts.tachometer import GpioTachometer
-            tachometer = GpioTachometer(gpio_pin=cfg.ODOM_PIN, 
-                                        ticks_per_revolution=cfg.ENCODER_PPR, 
-                                        direction_mode=cfg.TACHOMETER_MODE, 
-                                        debounce_ns=cfg.ENCODER_DEBOUNCE_NS)
+            tachometer = GpioTachometer(
+                gpio_pin=cfg.ODOM_PIN, 
+                ticks_per_revolution=cfg.ENCODER_PPR, 
+                direction_mode=cfg.TACHOMETER_MODE, 
+                debounce_ns=cfg.ENCODER_DEBOUNCE_NS)
         elif cfg.ENCODER_TYPE == "arduino":
-            from donkeycar.parts.tachometer import SerialTachometer
-            tachometer = SerialTachometer(ticks_per_revolution=cfg.ENCODER_PPR, 
-                                          direction_mode=cfg.TACHOMETER_MODE,
-                                          poll_delay_secs=1.0/(cfg.DRIVE_LOOP_HZ*3),
-                                          serial_port=cfg.ODOM_SERIAL)
+            tachometer = SerialTachometer(
+                ticks_per_revolution=cfg.ENCODER_PPR, 
+                direction_mode=cfg.TACHOMETER_MODE,
+                poll_delay_secs=1.0/(cfg.DRIVE_LOOP_HZ*3),
+                serial_port=cfg.ODOM_SERIAL)
         else:
             print("No supported encoder found")
 
