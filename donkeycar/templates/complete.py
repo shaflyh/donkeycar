@@ -29,9 +29,6 @@ from donkeycar.parts.throttle_filter import ThrottleFilter
 from donkeycar.parts.behavior import BehaviorPart
 from donkeycar.parts.file_watcher import FileWatcher
 from donkeycar.parts.launch import AiLaunch
-from donkeycar.parts.tachometer import (SerialTachometer, GpioTachometer, TachometerMode)
-from donkeycar.parts.odometer import Odometer
-from donkeycar.pipeline.augmentations import ImageAugmentation
 from donkeycar.utils import *
 
 logger = logging.getLogger(__name__)
@@ -78,25 +75,32 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
         tel = MqttTelemetry(cfg)
         
     if cfg.HAVE_ODOM:
+        from donkeycar.parts.tachometer import (SerialPort, SerialTachometer, GpioTachometer, TachometerMode)
+        from donkeycar.parts.odometer import Odometer
         tachometer = None
         if cfg.ENCODER_TYPE == "GPIO":
             tachometer = GpioTachometer(
                 gpio_pin=cfg.ODOM_PIN, 
                 ticks_per_revolution=cfg.ENCODER_PPR, 
                 direction_mode=cfg.TACHOMETER_MODE, 
-                debounce_ns=cfg.ENCODER_DEBOUNCE_NS)
+                debounce_ns=cfg.ENCODER_DEBOUNCE_NS,
+                debug=cfg.ODOM_DEBUG)
         elif cfg.ENCODER_TYPE == "arduino":
             tachometer = SerialTachometer(
                 ticks_per_revolution=cfg.ENCODER_PPR, 
                 direction_mode=cfg.TACHOMETER_MODE,
                 poll_delay_secs=1.0/(cfg.DRIVE_LOOP_HZ*3),
-                serial_port=cfg.ODOM_SERIAL)
+                serial_port=SerialPort(cfg.ODOM_SERIAL, cfg.ODOM_SERIAL_BAUDRATE),
+                debug=cfg.ODOM_DEBUG)
         else:
             print("No supported encoder found")
 
         if tachometer:
-            odometer = Odometer(distance_per_revolution=cfg.ENCODER_PPR * cfg.MM_PER_TICK, smoothing_count=cfg.ODOM_SMOOTHING)
-            V.add(tachometer, inputs=['throttle'], outputs=['enc/revolutions', 'enc/timestamp'], threaded=True)
+            odometer = Odometer(
+                distance_per_revolution=cfg.ENCODER_PPR * cfg.MM_PER_TICK / 1000, 
+                smoothing_count=cfg.ODOM_SMOOTHING, 
+                debug=cfg.ODOM_DEBUG)
+            V.add(tachometer, inputs=['throttle', None], outputs=['enc/revolutions', 'enc/timestamp'], threaded=True)
             V.add(odometer, inputs=['enc/revolutions', 'enc/timestamp'], outputs=['enc/distance', 'enc/speed', 'enc/timestamp'], threaded=True)
 
     logger.info("cfg.CAMERA_TYPE %s"%cfg.CAMERA_TYPE)
@@ -476,6 +480,7 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
             outputs.append("pilot/loc")
         # Add image transformations like crop or trapezoidal mask
         if hasattr(cfg, 'TRANSFORMATIONS') and cfg.TRANSFORMATIONS:
+            from donkeycar.pipeline.augmentations import ImageAugmentation
             V.add(ImageAugmentation(cfg, 'TRANSFORMATIONS'),
                   inputs=['cam/image_array'], outputs=['cam/image_array_trans'])
             inputs = ['cam/image_array_trans'] + inputs[1:]
