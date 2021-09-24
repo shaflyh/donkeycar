@@ -391,6 +391,11 @@ class ShowPredictionPlots(BaseCommand):
         throttles_df = pd.DataFrame({'user_throttle': user_throttles,
                                      'pilot_throttle': pilot_throttles})
 
+        print(angles_df)
+        print(throttles_df)
+        throttles_df.to_json("angles_df.json", orient = 'table')
+        throttles_df.to_json("throttles_df.json", orient = 'table')
+
         fig = plt.figure()
         title = f"Model Predictions\nTubs: {tub_paths}\nModel: {model_path}\n" \
                 f"Type: {model_type}"
