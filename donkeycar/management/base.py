@@ -393,8 +393,10 @@ class ShowPredictionPlots(BaseCommand):
 
         print(angles_df)
         print(throttles_df)
-        throttles_df.to_json("angles_df.json", orient = 'table')
+        print('Creating JSON File...')
+        angles_df.to_json("angles_df.json", orient = 'table')
         throttles_df.to_json("throttles_df.json", orient = 'table')
+        print('Done')
 
         fig = plt.figure()
         title = f"Model Predictions\nTubs: {tub_paths}\nModel: {model_path}\n" \
