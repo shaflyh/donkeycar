@@ -399,15 +399,22 @@ class ShowPredictionPlots(BaseCommand):
         print('Done')
 
         fig = plt.figure()
-        title = f"Model Predictions\nTubs: {tub_paths}\nModel: {model_path}\n" \
-                f"Type: {model_type}"
+        # title = f"Model Predictions\nTubs: {tub_paths}\nModel: {model_path}\n" \
+        #         f"Type: {model_type}"
+        title = "Prediksi Sudut Kemudi dan Kecepatan Mobil oleh Model"
         fig.suptitle(title)
         ax1 = fig.add_subplot(211)
         ax2 = fig.add_subplot(212)
         angles_df.plot(ax=ax1)
         throttles_df.plot(ax=ax2)
         ax1.legend(loc=4)
+        ax1.legend(['Data sudut', 'Prediksi sudut'])
+        ax1.xlabel('Data')
+        ax1.ylabel('Sudut')
         ax2.legend(loc=4)
+        ax2.legend(['Data kecepatan', 'Prediksi kecepatan'])
+        ax1.xlabel('Data')
+        ax1.ylabel('Kecepatan')
         plt.savefig(model_path + '_pred.png')
         logger.info(f'Saving model at {model_path}_pred.png')
         plt.show()
