@@ -398,6 +398,7 @@ class ShowPredictionPlots(BaseCommand):
         throttles_df.to_json("throttles_df.json", orient = 'table')
         print('Done')
 
+        # Plot the graph
         fig = plt.figure()
         # title = f"Model Predictions\nTubs: {tub_paths}\nModel: {model_path}\n" \
         #         f"Type: {model_type}"
@@ -415,7 +416,8 @@ class ShowPredictionPlots(BaseCommand):
         ax2.legend(['Data kecepatan', 'Prediksi kecepatan'])
         ax2.set_xlabel('Gambar')
         ax2.set_ylabel('Kecepatan')
-        fig.tight_layout()
+
+        fig.tight_layout(rect=[0, 0.03, 1, 0.9])
         plt.savefig(model_path + '_pred.png')
         logger.info(f'Saving model at {model_path}_pred.png')
         plt.show()
