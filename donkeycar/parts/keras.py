@@ -389,26 +389,22 @@ class KerasLinear2(KerasPilot):
         img_in = Input(shape=self.input_shape, name='img_in')
 
         x = img_in
-        x = conv2d(16, 5, 2, 1)(x)
+        x = conv2d(8, 5, 2, 1)(x)
         x = Dropout(drop)(x)
-        x = conv2d(32, 5, 2, 2)(x)
+        x = conv2d(16, 5, 2, 2)(x)
         x = Dropout(drop)(x)
-        x = conv2d(64, 5, 2, 3)(x)
+        x = conv2d(32, 5, 2, 3)(x)
         x = Dropout(drop)(x)
-        x = conv2d(128, 3, 1, 4)(x)
+        x = conv2d(64, 3, 1, 4)(x)
         x = Dropout(drop)(x)
-        x = conv2d(256, 3, 1, 5)(x)
+        x = conv2d(128, 3, 1, 5)(x)
 
         x = Dropout(drop)(x)
         x = Flatten(name='flattened')(x)
 
-        x = Dense(200, activation='relu', name='dense_1')(x)
+        x = Dense(100, activation='relu', name='dense_1')(x)
         x = Dropout(drop)(x)
-        x = Dense(10, activation='relu', name='dense_2')(x)
-        x = Dropout(drop)(x)
-        x = Dense(50, activation='relu', name='dense_3')(x)
-        x = Dropout(drop)(x)
-        x = Dense(25, activation='relu', name='dense_4')(x)
+        x = Dense(50, activation='relu', name='dense_2')(x)
         x = Dropout(drop)(x)
 
         outputs = []
