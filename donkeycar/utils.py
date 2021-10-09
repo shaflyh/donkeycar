@@ -454,6 +454,8 @@ def get_model_by_type(model_type: str, cfg: 'Config') -> 'KerasPilot':
     used_model_type = EqMemorizedString(used_model_type)
     if used_model_type == "linear":
         kl = KerasLinear(interpreter=interpreter, input_shape=input_shape)
+    elif used_model_type == "linear2":
+        kl = KerasLinear(interpreter=interpreter, input_shape=input_shape)
     elif used_model_type == "categorical":
         kl = KerasCategorical(
             interpreter=interpreter,

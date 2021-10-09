@@ -371,6 +371,66 @@ class KerasLinear(KerasPilot):
                    'n_outputs1': tf.TensorShape([])})
         return shapes
 
+class KerasLinear2(KerasPilot):
+    """
+    The KerasLinear pilot uses one neuron to output a continuous value via
+    the Keras Dense layer with linear activation. One each for steering and
+    throttle. The output is not bounded.
+    """
+    def __init__(self,
+                 interpreter: Interpreter = KerasInterpreter(),
+                 input_shape: Tuple[int, ...] = (120, 160, 3),
+                 num_outputs: int = 2):
+        self.num_outputs = num_outputs
+        super().__init__(interpreter, input_shape)
+
+    def create_model(self):
+        drop = 0.2
+        img_in = Input(shape=self.input_shape, name='img_in')
+        x = core_cnn_layers(img_in, drop)
+        x = Dense(100, activation='relu', name='dense_1')(x)
+        x = Dropout(drop)(x)
+        x = Dense(50, activation='relu', name='dense_2')(x)
+        x = Dropout(drop)(x)
+        x = Dense(25, activation='relu', name='dense_3')(x)
+        x = Dropout(drop)(x)
+        x = Dense(10, activation='relu', name='dense_4')(x)
+        x = Dropout(drop)(x)
+
+        outputs = []
+        for i in range(self.num_outputs):
+            outputs.append(
+                Dense(1, activation='linear', name='n_outputs' + str(i))(x))
+
+        model = Model(inputs=[img_in], outputs=outputs, name='linear')
+        return model
+
+    def compile(self):
+        self.interpreter.compile(optimizer=self.optimizer, loss='mse')
+
+    def interpreter_to_output(self, interpreter_out):
+        steering = interpreter_out[0]
+        throttle = interpreter_out[1]
+        return steering[0], throttle[0]
+
+    def y_transform(self, record: Union[TubRecord, List[TubRecord]]) -> XY:
+        assert isinstance(record, TubRecord), 'TubRecord expected'
+        angle: float = record.underlying['user/angle']
+        throttle: float = record.underlying['user/throttle']
+        return angle, throttle
+
+    def y_translate(self, y: XY) -> Dict[str, Union[float, List[float]]]:
+        assert isinstance(y, tuple), 'Expected tuple'
+        angle, throttle = y
+        return {'n_outputs0': angle, 'n_outputs1': throttle}
+
+    def output_shapes(self):
+        # need to cut off None from [None, 120, 160, 3] tensor shape
+        img_shape = self.get_input_shapes()[0][1:]
+        shapes = ({'img_in': tf.TensorShape(img_shape)},
+                  {'n_outputs0': tf.TensorShape([]),
+                   'n_outputs1': tf.TensorShape([])})
+        return shapes
 
 class KerasMemory(KerasLinear):
     """
