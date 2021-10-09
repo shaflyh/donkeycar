@@ -460,9 +460,9 @@ def get_model_by_type(model_type: str, cfg: 'Config') -> 'KerasPilot':
         kl = KerasLinear3(interpreter=interpreter, input_shape=input_shape)
     elif used_model_type == "linear4":
         kl = KerasLinear4(interpreter=interpreter, input_shape=input_shape)
-    elif used_model_type == "linear4":
+    elif used_model_type == "linear5":
         kl = KerasLinear5(interpreter=interpreter, input_shape=input_shape)
-    elif used_model_type == "linear4":
+    elif used_model_type == "linear6":
         kl = KerasLinear6(interpreter=interpreter, input_shape=input_shape)
     elif used_model_type == "categorical":
         kl = KerasCategorical(
