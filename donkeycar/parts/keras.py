@@ -371,7 +371,7 @@ class KerasLinear(KerasPilot):
                    'n_outputs1': tf.TensorShape([])})
         return shapes
 
-class KerasLinear2(KerasPilot):
+class KerasLinear5(KerasPilot):
     """
     The KerasLinear pilot uses one neuron to output a continuous value via
     the Keras Dense layer with linear activation. One each for steering and
@@ -442,7 +442,7 @@ class KerasLinear2(KerasPilot):
                    'n_outputs1': tf.TensorShape([])})
         return shapes
 
-class KerasLinear3(KerasPilot):
+class KerasLinear2(KerasPilot):
     """
     The KerasLinear pilot uses one neuron to output a continuous value via
     the Keras Dense layer with linear activation. One each for steering and
@@ -507,7 +507,7 @@ class KerasLinear3(KerasPilot):
                    'n_outputs1': tf.TensorShape([])})
         return shapes
 
-class KerasLinear4(KerasPilot):
+class KerasLinear3(KerasPilot):
     """
     The KerasLinear pilot uses one neuron to output a continuous value via
     the Keras Dense layer with linear activation. One each for steering and
@@ -576,7 +576,7 @@ class KerasLinear4(KerasPilot):
 
 
 
-class KerasLinear5(KerasPilot):
+class KerasLinear4(KerasPilot):
     """
     The KerasLinear pilot uses one neuron to output a continuous value via
     the Keras Dense layer with linear activation. One each for steering and
@@ -646,7 +646,7 @@ class KerasLinear5(KerasPilot):
         return shapes
 
 
-class KerasLinear1(KerasPilot):
+class KerasLinear6(KerasPilot):
     """
     The KerasLinear pilot uses one neuron to output a continuous value via
     the Keras Dense layer with linear activation. One each for steering and
