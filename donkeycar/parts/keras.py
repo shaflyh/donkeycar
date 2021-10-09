@@ -389,15 +389,15 @@ class KerasLinear2(KerasPilot):
         img_in = Input(shape=self.input_shape, name='img_in')
 
         x = img_in
-        x = conv2d(8, 5, 2, 1)(x)
+        x = conv2d(32, 5, 2, 1)(x)
         x = Dropout(drop)(x)
-        x = conv2d(16, 5, 2, 2)(x)
+        x = conv2d(32, 5, 2, 2)(x)
         x = Dropout(drop)(x)
         x = conv2d(32, 5, 2, 3)(x)
         x = Dropout(drop)(x)
         x = conv2d(64, 3, 1, 4)(x)
         x = Dropout(drop)(x)
-        x = conv2d(128, 3, 1, 5)(x)
+        x = conv2d(64, 3, 1, 5)(x)
 
         x = Dropout(drop)(x)
         x = Flatten(name='flattened')(x)
