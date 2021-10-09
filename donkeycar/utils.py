@@ -433,9 +433,9 @@ def get_model_by_type(model_type: str, cfg: 'Config') -> 'KerasPilot':
     given the string model_type and the configuration settings in cfg
     create a Keras model and return it.
     '''
-    from donkeycar.parts.keras import KerasCategorical, KerasLinear, KerasLinear2, \
+    from donkeycar.parts.keras import KerasCategorical, KerasLinear, KerasLinear2, KerasLinear3, KerasLinear4,\
         KerasInferred, KerasIMU, KerasMemory, KerasBehavioral, KerasLocalizer, \
-        KerasLSTM, Keras3D_CNN
+        KerasLSTM, Keras3D_CNN, KerasLinear1, KerasLinear5
     from donkeycar.parts.interpreter import KerasInterpreter, TfLite, TensorRT
 
     if model_type is None:
@@ -456,6 +456,14 @@ def get_model_by_type(model_type: str, cfg: 'Config') -> 'KerasPilot':
         kl = KerasLinear(interpreter=interpreter, input_shape=input_shape)
     elif used_model_type == "linear2":
         kl = KerasLinear2(interpreter=interpreter, input_shape=input_shape)
+    elif used_model_type == "linear3":
+        kl = KerasLinear3(interpreter=interpreter, input_shape=input_shape)
+    elif used_model_type == "linear4":
+        kl = KerasLinear4(interpreter=interpreter, input_shape=input_shape)
+    elif used_model_type == "linear4":
+        kl = KerasLinear5(interpreter=interpreter, input_shape=input_shape)
+    elif used_model_type == "linear4":
+        kl = KerasLinear1(interpreter=interpreter, input_shape=input_shape)
     elif used_model_type == "categorical":
         kl = KerasCategorical(
             interpreter=interpreter,
