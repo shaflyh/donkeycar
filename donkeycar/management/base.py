@@ -394,8 +394,8 @@ class ShowPredictionPlots(BaseCommand):
         print(angles_df)
         print(throttles_df)
         print('Creating JSON File...')
-        angles_df.to_json("angles_df.json", orient = 'table')
-        throttles_df.to_json("throttles_df.json", orient = 'table')
+        angles_df.to_json(model_path + "_angles_df.json", orient = 'table')
+        throttles_df.to_json(model_path + "_throttles_df.json", orient = 'table')
         print('Done')
 
         # Plot the graph
@@ -410,11 +410,11 @@ class ShowPredictionPlots(BaseCommand):
         throttles_df.plot(ax=ax2)
         ax1.legend(loc=4)
         ax1.legend(['Data sudut', 'Prediksi sudut'])
-        ax1.set_xlabel('Gambar')
+        ax1.set_xlabel('Index gambar')
         ax1.set_ylabel('Sudut')
         ax2.legend(loc=4)
         ax2.legend(['Data kecepatan', 'Prediksi kecepatan'])
-        ax2.set_xlabel('Gambar')
+        ax2.set_xlabel('Index gambar')
         ax2.set_ylabel('Kecepatan')
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.95])
